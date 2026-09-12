@@ -1,63 +1,63 @@
-class AksesServer:
+class Pemain:
+    __jumlahPemain = 0
+    
+    def __init__(self, nama, klub, stamina = 100):
+        self.__nama = nama
+        self.__klub = klub
+        self.__stamina = stamina
+        self.__jumlahPemain += 1
+        self.bermain()
 
-    total_koneksi_aktif = 0
+    def tampilkan_profil(self):
+        print("Pemain: {} | Klub: {} | Stamina: {}".format(self.nama, self.klub, self.stamina))
 
-    def __init__(self, username, password):
-        self.username = username
-        self.__password = password
-        AksesServer.total_koneksi_aktif += 1
-
-    @staticmethod
-    def validasi_ip(ip_address):
-        return ip_address.startswith("192.168.")
-        # if ip_address.start() == "192.168.":
-        #     return True
-        # else:
-        #     return False
+    def bermain(self):
+        self.__stamina -= 10
+        print(f"{self.__nama} bermain di lapangan.")
 
     @classmethod
-    def dari_string(cls, input):
-        input_baru = input.split("-")
-        return cls(input_baru[0], input_baru[1])
-    
-    @property
-    def password(self):
-        pass
+    def getJumlah(cls):
+        return cls.__jumlahPemain
 
-    @password.getter
-    def password(self):
-        return "*** TERENKRIPSI ***"
-    
-    @password.setter
-    def password(self, input):
-        if len(input) < 8:
-            print("Error: Password baru harus minimal 8 karakter!")
-        else:
-            self.__password = input
-            print("Password berhasil diperbarui.")
+class Penyerang(Pemain):
 
-    @password.deleter
-    def password(self):
-        self.__password = None
-        AksesServer.total_koneksi_aktif -= 1
-        print(f"Akses untuk user {self.username} telah dicabut. Password dihapus.")
+    def __init__(self, nama, klub, stamina = 100, jumlah_gol = 0):
+        super().__init__(nama, klub, stamina)
+        self.jumlah_gol = jumlah_gol
 
-# Skenario Pengujian (Dilarang mengubah kode di bawah ini)
-print("--- UJI STATIC METHOD ---")
-print(f"IP 192.168.1.10 valid? {AksesServer.validasi_ip('192.168.1.10')}")
-print(f"IP 10.0.0.5 valid? {AksesServer.validasi_ip('10.0.0.5')}")
+    def bermain(self):
+        super().bermain()
+        print(f"{self.nama} fokus menyerang pertahanan lawan.")
 
-print("\n--- UJI CLASS METHOD & INSTANSIASI ---")
-user1 = AksesServer("mahdi", "rahasia123")
-user2 = AksesServer.dari_string("thoriq-sandi456")
-print(f"Total koneksi aktif: {AksesServer.total_koneksi_aktif}")
+    # def cetak_gol(self):
+    #     self.jumlah_gol += 1
+    #     print("GOOOL! {} mencetak angka. Total gol: {}".format(self.nama, self.jumlah_gol))
 
-print("\n--- UJI GETTER & SETTER PROPERTY ---")
-print(f"Password {user1.username}: {user1.password}")
-user1.password = "pendek"
-user1.password = "passwordBaru99"
-print(f"Password {user1.username} setelah diubah: {user1.password}")
+class Bek(Pemain):
 
-print("\n--- UJI DELETER PROPERTY ---")
-del user2.password
-print(f"Total koneksi aktif sekarang: {AksesServer.total_koneksi_aktif}")
+    def __init__(self, nama, klub, stamina = 100, jumlah_tekel = 0):
+        super().__init__(nama, klub, stamina)
+        self.jumlah_tekel = jumlah_tekel
+
+    def tampilkan_profil(self):
+        print("BEK TANGGUH -> Nama: {} | Klub: {} | Tekel Sukses: {}".format(self.nama, self.klub, self.jumlah_tekel))
+
+    def lakukan_tekel(self):
+        self.jumlah_tekel += 1
+        self.stamina -= 5
+        print("{} melakukan tekel bersih! Stamina tersisa: {}".format(self.nama, self.stamina))
+
+striker = Penyerang("Mbappe", "Real Madrid")
+defender = Bek("Van Dijk", "Liverpool")
+
+striker.tampilkan_profil()
+striker.bermain()
+striker.cetak_gol()
+striker.cetak_gol()
+
+print("-" * 20)
+
+defender.tampilkan_profil()
+defender.lakukan_tekel()
+defender.bermain()
+defender.tampilkan_profil()
